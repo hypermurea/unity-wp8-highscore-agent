@@ -6,6 +6,7 @@ using Microsoft.Phone.Shell;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using System.IO.IsolatedStorage;
 
 namespace HighscoreBackgroundAgent {
     public class ScheduledAgent : ScheduledTaskAgent {
@@ -66,8 +67,13 @@ namespace HighscoreBackgroundAgent {
             ShellTile tile = ShellTile.ActiveTiles.First();
             if (tile != null) {
                 IconicTileData data = new IconicTileData();
-                data.Count = (int)highscore;
-                data.Title = "Chopper highscore";
+                if (IsolatedStorageSettings.ApplicationSettings.Contains("gamesplayed")) {
+                    data.Count = (int)IsolatedStorageSettings.ApplicationSettings["gamesplayed"];
+                }
+                else {
+                    data.Count = 0;
+                }
+                data.Title = "Highscore: " + highscore;
                 tile.Update(data);
             }
             tileupdated = true;
